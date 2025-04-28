@@ -1,14 +1,13 @@
 # .github/workflows/deploy-meta.yml
-name: Deploy Meta-repo
+name: Meta Repo CI/CD
 
 on:
-  push:
-    branches: [ master ]
+  workflow_call:
 
 jobs:
   deploy-meta:
+    name: Deploy Meta-repo
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout meta-repo
         uses: actions/checkout@v3
@@ -23,7 +22,7 @@ jobs:
             ./ \
             ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/srv/ft_preavis/
 
-      - name: Restart infrastructure
+      - name: Restart infrastructure production
         uses: appleboy/ssh-action@v0.1.9
         with:
           host:     ${{ secrets.SERVER_HOST }}
