@@ -1,6 +1,10 @@
 # .github/workflows/frontend-ci-cd.yml
 name: Frontend CI/CD Template
 
+permissions:
+  contents: read
+  actions: read
+
 on:
   workflow_call:
     # No inputs needed; static frontend path and deploy target are fixed
@@ -30,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download build artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: frontend-build
           path: build
