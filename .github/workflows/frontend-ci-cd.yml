@@ -44,7 +44,7 @@ jobs:
         run: |
           rsync -rlz --delete \
             -e "ssh -p ${{ secrets.SERVER_PORT }}" \
-            ./build/ \
+            ./ \
             ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/srv/ft_preavis/frontend/build/
 
       - name: Restart production infra

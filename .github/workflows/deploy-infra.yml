@@ -26,7 +26,7 @@ jobs:
         run: |
           rsync -rlz --delete \
             -e "ssh -p ${{ secrets.SERVER_PORT }} -o StrictHostKeyChecking=no" \
-            ./infra/ \
+            ./ \
             ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/srv/ft_preavis/infra/
 
       - name: Restart infrastructure production
