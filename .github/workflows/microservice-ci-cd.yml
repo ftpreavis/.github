@@ -1,4 +1,4 @@
-# .github/workflows/microserivce-ci-cd.yml
+# .github/workflows/microservice-ci-cd.yml
 name: Microservice CD Template
 
 on:
@@ -19,15 +19,13 @@ jobs:
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
-          password: ${{ secrets.SERVER_PASSWORD }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
             cd /srv/ft_preavis/services/${{ inputs.service_name }}
             git pull origin master
             cd /srv/ft_preavis
             make restart-prod
-
-
 
 # Usage in a microservice repo:
 #--------------------------------
@@ -38,7 +36,7 @@ jobs:
 #     branches: [ master ]
 # jobs:
 #   ci-cd:
-#     uses: ftpreavis/.github/.github/workflows/microservice-ci-cd-template.yml@main
+#     uses: ftpreavis/.github/.github/workflows/ci-cd-microservices.yml@main
 #     with:
 #       service_name: your-service
 #     secrets: inherit
