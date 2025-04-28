@@ -1,0 +1,67 @@
+# .github/workflows/microserivce-ci-cd.yml
+name: Microservice CI/CD Template
+
+on:
+  workflow_call:
+    inputs:
+      service_name:
+        description: 'The Docker service name as defined in docker-compose'
+        required: true
+        type: string
+
+jobs:
+  build-and-push:
+    name: Build & Push Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.GITHUB_ACTOR }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: |
+            ghcr.io/ftpreavis/${{ inputs.service_name }}:latest
+            ghcr.io/ftpreavis/${{ inputs.service_name }}:${{ github.sha }}
+
+  deploy:
+    name: Deploy via Makefile
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH & restart production infra
+        uses: appleboy/ssh-action@v0.1.9
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: 22
+          script: |
+            cd /srv/ft_preavis
+            make restart-prod
+
+
+
+# Usage in a microservice repo:
+#--------------------------------
+# .github/workflows/ci-cd.yml
+# name: CI/CD
+# on:
+#   push:
+#     branches: [ master ]
+# jobs:
+#   ci-cd:
+#     uses: ftpreavis/.github/.github/workflows/microservice-ci-cd-template.yml@main
+#     with:
+#       service_name: your-service
+#     secrets: inherit

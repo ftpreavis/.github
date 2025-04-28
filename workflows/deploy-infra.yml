@@ -1,0 +1,32 @@
+# .github/workflows/deploy-infra.yml
+name: Deploy Infra
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy-infra:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout infra code
+        uses: actions/checkout@v3
+
+      - name: Rsync infra folder to server
+        run: |
+          rsync -avz --delete \
+            --exclude='.git' \
+            ./ \
+            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/srv/ft_preavis/infra/
+
+      - name: Restart infra in production
+        uses: appleboy/ssh-action@v0.1.9
+        with:
+          host:      ${{ secrets.SERVER_HOST }}
+          username:  ${{ secrets.SERVER_USER }}
+          password:  ${{ secrets.SERVER_PASSWORD }}
+          port:      22
+          script: |
+            cd /srv/ft_preavis
+            make restart-prod

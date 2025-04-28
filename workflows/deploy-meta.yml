@@ -1,0 +1,35 @@
+# .github/workflows/deploy-meta.yml
+name: Deploy Meta-repo
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy-meta:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout meta-repo
+        uses: actions/checkout@v3
+
+      - name: Rsync root-level changes only
+        run: |
+          rsync -avz --delete \
+            --exclude='.git' \
+            --exclude='infra/' \
+            --exclude='services/' \
+            --exclude='frontend/' \
+            ./ \
+            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/srv/ft_preavis/
+
+      - name: Restart infrastructure
+        uses: appleboy/ssh-action@v0.1.9
+        with:
+          host:     ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port:     22
+          script: |
+            cd /srv/ft_preavis
+            make restart-prod
