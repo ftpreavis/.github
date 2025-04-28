@@ -1,5 +1,5 @@
 # .github/workflows/frontend-ci-cd.yml
-name: Frontend CI/CD Template
+name: Frontend CI/CD
 
 permissions:
   contents: read
@@ -28,6 +28,12 @@ jobs:
       - name: Build production bundle
         run: npm run build
 
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: frontend-build
+          path: dist/
+
   deploy:
     name: Deploy Frontend
     needs: build
@@ -37,7 +43,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: frontend-build
-          path: build
+          path: dist
 
       - name: Setup SSH key
         uses: webfactory/ssh-agent@v0.5.3
@@ -47,8 +53,8 @@ jobs:
       - name: Rsync build to server
         run: |
           rsync -rlz --delete \
-            -e "ssh -p ${{ secrets.SERVER_PORT }}" \
-            ./ \
+            -e "ssh -p ${{ secrets.SERVER_PORT }} -o StrictHostKeyChecking=no" \
+            ./dist/ \
             ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/srv/ft_preavis/frontend/build/
 
       - name: Restart production infra
@@ -71,5 +77,5 @@ jobs:
 #     branches: [ master ]
 # jobs:
 #   frontend-ci-cd:
-#     uses: ftpreavis/.github/.github/workflows/frontend-ci-cd.yml@main
+#     uses: your-org/.github/.github/workflows/frontend-ci-cd-template.yml@main
 #     secrets: inherit
