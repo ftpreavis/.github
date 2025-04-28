@@ -1,13 +1,12 @@
-# .github/workflows/frontend-ci-cd.yml
-name: Frontend CI/CD
+# .github/workflows/frontend-ci-cd-template.yml
+name: Frontend CI/CD Template
 
 permissions:
   contents: read
-  actions: write
+  actions: write     # needed to upload artifacts
 
 on:
   workflow_call:
-    # No inputs needed; static frontend path and deploy target are fixed
 
 jobs:
   build:
@@ -17,7 +16,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Node.js 18.x
+      - name: Setup Node 18.x
         uses: actions/setup-node@v3
         with:
           node-version: '18.x'
@@ -29,7 +28,7 @@ jobs:
         run: npm run build
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2    # ← pin to v2
         with:
           name: frontend-build
           path: dist/
@@ -67,15 +66,3 @@ jobs:
           script: |
             cd /srv/ft_preavis
             sudo make restart-prod
-
-# Usage in ftpreavis/frontend repo:
-#----------------------------------
-# .github/workflows/ci-cd.yml
-# name: Frontend CI/CD
-# on:
-#   push:
-#     branches: [ master ]
-# jobs:
-#   frontend-ci-cd:
-#     uses: your-org/.github/.github/workflows/frontend-ci-cd-template.yml@main
-#     secrets: inherit
