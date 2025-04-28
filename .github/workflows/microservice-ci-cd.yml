@@ -25,7 +25,7 @@ jobs:
             cd /srv/ft_preavis/services/${{ inputs.service_name }}
             git pull origin master
             cd /srv/ft_preavis
-            make restart-prod
+#            make restart-prod
 
 # Usage in a microservice repo:
 #--------------------------------
