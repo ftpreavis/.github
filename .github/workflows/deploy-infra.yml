@@ -24,7 +24,7 @@ jobs:
 
       - name: Rsync infra folder to server
         run: |
-          rsync -avz --delete \
+          rsync -rlz --delete \
             -e "ssh -p ${{ secrets.SERVER_PORT }} -o StrictHostKeyChecking=no" \
             ./infra/ \
             ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/srv/ft_preavis/infra/

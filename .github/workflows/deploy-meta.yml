@@ -25,7 +25,7 @@ jobs:
 
       - name: Rsync root-level changes only
         run: |
-          rsync -avz --delete \
+          rsync -rlz --delete \
             -e "ssh -p ${{ secrets.SERVER_PORT }} -o StrictHostKeyChecking=no" \
             --exclude='.git' \
             --exclude='infra/' \

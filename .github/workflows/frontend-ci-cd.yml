@@ -42,7 +42,7 @@ jobs:
 
       - name: Rsync build to server
         run: |
-          rsync -avz --delete \
+          rsync -rlz --delete \
             -e "ssh -p ${{ secrets.SERVER_PORT }}" \
             ./build/ \
             ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/srv/ft_preavis/frontend/build/
