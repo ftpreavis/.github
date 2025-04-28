@@ -12,13 +12,18 @@ jobs:
       - name: Checkout infra code
         uses: actions/checkout@v3
 
+      - name: Install rsync and sshpass
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rsync sshpass
+
       - name: Rsync infra folder to server
         run: |
-          rsync -avz --delete \
-            --exclude='.git' \
-            --exclude='.terraform' \
-            ./ \
-            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/srv/ft_preavis/infra/
+          sshpass -p "${{ secrets.SERVER_PASSWORD }}" rsync -avz \
+                -e "ssh -p ${{ secrets.SERVER_PORT }}" -o StrictHostKeyChecking=no \
+                --delete \
+                ./build/ \
+                ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/srv/ft_preavis/frontend/build/
 
       - name: Restart infrastructure production
         uses: appleboy/ssh-action@v0.1.9
