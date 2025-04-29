@@ -27,7 +27,8 @@ jobs:
           rsync -rlz --delete \
             -e "ssh -p ${{ secrets.SERVER_PORT }} -o StrictHostKeyChecking=no" \
             ./ \
-            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/srv/ft_preavis/infra/
+            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/srv/ft_preavis/infra/ \
+            --rsync-path="sudo rsync"
 
       - name: Restart infrastructure production
         uses: appleboy/ssh-action@v0.1.9
