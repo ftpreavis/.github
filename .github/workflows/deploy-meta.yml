@@ -32,7 +32,8 @@ jobs:
             --exclude='services/' \
             --exclude='frontend/' \
             ./ \
-            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/srv/ft_preavis/
+            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/srv/ft_preavis/ \
+            --rsync-path="sudo rsync"
 
       - name: Restart infrastructure production
         uses: appleboy/ssh-action@v0.1.9
