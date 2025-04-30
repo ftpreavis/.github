@@ -23,8 +23,8 @@ jobs:
           port: ${{ secrets.SERVER_PORT }}
           script: |
             cd /srv/ft_preavis/services/${{ inputs.service_name }}
-            git config --global --add safe.directory /srv/ft_preavis/services/${{ inputs.service_name }}
-            git pull origin master
+            sudo git config --global --add safe.directory /srv/ft_preavis/services/${{ inputs.service_name }}
+            sudo git pull origin master
             cd /srv/ft_preavis
             make restart-prod
 
