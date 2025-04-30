@@ -23,10 +23,8 @@ jobs:
           port: ${{ secrets.SERVER_PORT }}
           script: |
             git config --global --add safe.directory /srv/ft_preavis/services/${{ inputs.service_name }}
-            mkdir -p ~/.ssh
-            ssh-keyscan github.com >> ~/.ssh/known_hosts
             cd /srv/ft_preavis/services/${{ inputs.service_name }}
-            git pull origin master
+            git pull https://${{ secrets.GITHUB_TOKEN }}@github.com/ftpreavis/${{ inputs.service_name }}.git master
             cd /srv/ft_preavis
             make restart-prod
 
