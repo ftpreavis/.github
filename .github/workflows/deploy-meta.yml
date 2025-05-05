@@ -20,5 +20,6 @@ jobs:
           script: |
             git config --global --add safe.directory /srv/ft_preavis
             cd /srv/ft_preavis
+            git checkout master
             git pull https://${{ secrets.GITHUB_TOKEN }}@github.com/ftpreavis/ft_preavis.git master
             make restart-prod

@@ -19,6 +19,7 @@ jobs:
           script: |
             git config --global --add safe.directory /srv/ft_preavis/infra
             cd /srv/ft_preavis/infra
+            git checkout master
             git pull https://${{ secrets.GITHUB_TOKEN }}@github.com/ftpreavis/infra.git master
             cd /srv/ft_preavis
             make restart-prod
