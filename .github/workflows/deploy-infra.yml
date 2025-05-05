@@ -21,8 +21,8 @@ jobs:
           script: |
             git config --global --add safe.directory /srv/ft_preavis/infra
 
-            echo "machine github.com\nlogin x-access-token\npassword ${{ secrets.GITHUB_TOKEN }}\nEOF" > ~/.netrc
-            chmod 600 ~/.netrc
+            whoami
+            ls ~/.ssh/
 
             cd /srv/ft_preavis/infra
             git fetch --prune origin
