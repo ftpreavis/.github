@@ -19,7 +19,13 @@ jobs:
           port: ${{ secrets.SERVER_PORT }}
           script: |
             git config --global --add safe.directory /srv/ft_preavis
+
             cd /srv/ft_preavis
+            git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/ftpreavis/ft_preavis.git
+
+            git fetch --prune origin
             git checkout master
-            git pull https://${{ secrets.GITHUB_TOKEN }}@github.com/ftpreavis/ft_preavis.git master
+            git pull origin master
+            git remote set-url origin git@github.com:ftpreavis/ft_preavis.git
+            cd /srv/ft_preavis
             make restart-prod
