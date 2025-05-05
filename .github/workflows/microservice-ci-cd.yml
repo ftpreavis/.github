@@ -22,10 +22,32 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
-            git config --global --add safe.directory /srv/ft_preavis/services/${{ inputs.service_name }}
             cd /srv/ft_preavis/services/${{ inputs.service_name }}
+            eval "$(ssh-agent -s)"
+            ssh-add ~/.ssh/github <<< "${{ secrets.GITHUB_KEY_PASSPHRASE }}"
+            git config --global --add safe.directory /srv/ft_preavis/services/${{ inputs.service_name }}
+
+            git pull git@github.com:ftpreavis/${{ inputs.service_name }}.git master
+            git fetch --prune origin
+            rm -rf build
+            git restore ./
             git checkout master
-            git pull https://${{ secrets.GITHUB_TOKEN }}@github.com/ftpreavis/${{ inputs.service_name }}.git master
+            git reset --hard
+
+  restart-prod:
+    name: Restart infrastructure
+    needs: deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Restart production infra
+        uses: appleboy/ssh-action@v0.1.9
+        with:
+          host:     ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key:      ${{ secrets.SSH_PRIVATE_KEY }}
+          port:     ${{ secrets.SERVER_PORT }}
+          script: |
             cd /srv/ft_preavis
             make restart-prod
 

@@ -49,7 +49,7 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Restart production infra
+      - name: Pull frontend codebase
         uses: appleboy/ssh-action@v0.1.9
         with:
           host:     ${{ secrets.SERVER_HOST }}
@@ -57,12 +57,17 @@ jobs:
           key:      ${{ secrets.SSH_PRIVATE_KEY }}
           port:     ${{ secrets.SERVER_PORT }}
           script: |
-            git config --global --add safe.directory /srv/ft_preavis/frontend
             cd /srv/ft_preavis/frontend
+            eval "$(ssh-agent -s)"
+            ssh-add ~/.ssh/github <<< "${{ secrets.GITHUB_KEY_PASSPHRASE }}"
+            git config --global --add safe.directory /srv/ft_preavis/frontend
+
+            git pull git@github.com:ftpreavis/frontend.git master
+            git fetch --prune origin
             rm -rf build
             git restore ./
             git checkout master
-            git pull https://${{ secrets.GITHUB_TOKEN }}@github.com/ftpreavis/frontend.git master
+            git reset --hard
 
       - name: Rsync build to server
         run: |
@@ -72,6 +77,23 @@ jobs:
             ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/srv/ft_preavis/frontend/build/ \
             --rsync-path="sudo rsync"
 
+      - name: Restart production infra
+        uses: appleboy/ssh-action@v0.1.9
+        with:
+          host:     ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key:      ${{ secrets.SSH_PRIVATE_KEY }}
+          port:     ${{ secrets.SERVER_PORT }}
+          script: |
+            cd /srv/ft_preavis
+            make restart-prod
+
+  restart-prod:
+    name: Restart infrastructure
+    needs: deploy
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Restart production infra
         uses: appleboy/ssh-action@v0.1.9
         with:
