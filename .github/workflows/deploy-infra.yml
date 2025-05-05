@@ -16,10 +16,12 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SERVER_PORT }}
+          forward_agent: true             # ← enable SSH agent forwarding
           script: |
             git config --global --add safe.directory /srv/ft_preavis/infra
             cd /srv/ft_preavis/infra
+            git fetch --prune origin
             git checkout master
-            git pull https://${{ secrets.GITHUB_TOKEN }}@github.com/ftpreavis/infra.git master
+            git pull origin master
             cd /srv/ft_preavis
             make restart-prod
