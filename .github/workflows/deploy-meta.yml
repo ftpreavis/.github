@@ -20,7 +20,7 @@ jobs:
           script: |
             cd /srv/ft_preavis/
             eval "$(ssh-agent -s)"
-            ssh-add ~/.ssh/github <<< "${{ secrets.GITHUB_KEY_PASSPHRASE }}"
+            ssh-add ~/.ssh/github <<< "${{ secrets.SSH_GITHUB_PASSPHRASE }}"
             git config --global --add safe.directory /srv/ft_preavis
 
             git fetch --prune origin
