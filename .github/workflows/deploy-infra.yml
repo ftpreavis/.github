@@ -22,10 +22,8 @@ jobs:
             git config --global --add safe.directory /srv/ft_preavis/infra
 
             cd /srv/ft_preavis/infra
-            git remote set-url origin https://$TOKEN@github.com/ftpreavis/infra.git
             git fetch
             git checkout master
             git reset --hard
-            git remote set-url origin git@github.com:ftpreavis/infra.git
             cd /srv/ft_preavis
             make restart-prod
