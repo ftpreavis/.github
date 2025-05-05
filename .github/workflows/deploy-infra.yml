@@ -21,7 +21,13 @@ jobs:
           script: |
             git config --global --add safe.directory /srv/ft_preavis/infra
 
+            echo "machine github.com\nlogin x-access-token\npassword ${{ secrets.GITHUB_TOKEN }}\nEOF" > ~/.netrc
+            chmod 600 ~/.netrc
+
             cd /srv/ft_preavis/infra
-            git pull https://${{ secrets.GITHUB_TOKEN }}@github.com/ftpreavis/infra.git master
+            git fetch --prune origin
+            git checkout master
+            git pull origin master
+
             cd /srv/ft_preavis
             make restart-prod
