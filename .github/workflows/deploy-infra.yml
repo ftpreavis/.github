@@ -21,6 +21,6 @@ jobs:
 
             cd /srv/ft_preavis/infra
             git fetch https://${{ secrets.GITHUB_ACTOR }}:${{ secrets.GITHUB_TOKEN }}@github.com/ftpreavis/infra.git master
-            git reset --hard FETCH_HEAD
+            git reset --hard HEAD~
             cd /srv/ft_preavis
             make restart-prod
