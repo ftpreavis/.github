@@ -29,10 +29,10 @@ jobs:
 
             git pull git@github.com:ftpreavis/${{ inputs.service_name }}.git master
             git fetch --prune origin
-            rm -rf build
             git restore ./
             git checkout master
             git reset --hard
+            git pull origin master
 
   restart-prod:
     name: Restart infrastructure
